@@ -1,5 +1,5 @@
 #(©)CodeXBotz
-import logging
+#import logging
 import random, string
 import time
 import re
@@ -16,7 +16,7 @@ from helper_func import subscribed, encode, decode, get_messages, get_shortlink,
 from database.database import add_user, del_user, full_userbase, present_user
 from shortzy import Shortzy
 
-logger = logging.getLogger(__name__)
+#logger = logging.getLogger(__name__)
 
 
 
@@ -35,7 +35,7 @@ async def start_command(client: Client, message: Message):
             await update_verify_status(id, is_verified=False)
 
     except Exception as e:
-        print(f"Unexpected Error: {e}")
+        print(f"error verify 1")
         
     data = message.command[1]
     try:
@@ -51,7 +51,7 @@ async def start_command(client: Client, message: Message):
             return
 
     except Exception as e:
-        print(f"Unexpected Error: {e}")
+        print(f"error verify 2")
 
     try:
         verify_status = await get_verify_status(id)
@@ -68,7 +68,7 @@ async def start_command(client: Client, message: Message):
             return
 
     except Exception as e:
-        print(f"Unexpected Error: {e}")
+        print(f"error verify 3")
         
     text = message.text
     if len(text)>7:
