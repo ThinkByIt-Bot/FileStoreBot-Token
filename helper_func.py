@@ -1,5 +1,5 @@
 #(©)Codexbotz
-
+import logging
 import base64
 import re
 import asyncio
@@ -8,6 +8,14 @@ from pyrogram.enums import ChatMemberStatus
 from config import FORCE_SUB_CHANNEL, ADMINS
 from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant
 from pyrogram.errors import FloodWait
+from shortzy import Shortzy
+import requests
+import time
+from datetime import datetime
+from database.database import user_data, db_verify_status, db_update_verify_status
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL:
@@ -83,6 +91,29 @@ async def get_message_id(client, message):
                 return msg_id
     else:
         return 0
+
+async def get_verify_status(user_id):
+    try:
+        verify = await user_data.db_verify_status(user_id)
+        return verify
+    except Exception as e:
+        logger.exception(e)
+
+async def update_verify_status(user_id, verify_token="", is_verified=False, verified_time=0, link=""):
+    try:
+        current = await db_verify_status(user_id)
+        current['verify_token'] = verify_token
+        current['is_verified'] = is_verified
+        current['verified_time'] = verified_time
+        current['link'] = link
+        await user_data.db_update_verify_status(user_id, current)
+    except Exception as e:
+        logger.exception(e)
+
+async def get_shortlink(url, api, link):
+    shortzy = Shortzy(api_key=api, base_site=url)
+    link = await shortzy.convert(link)
+    return link
 
 
 def get_readable_time(seconds: int) -> str:
