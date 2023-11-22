@@ -1,5 +1,5 @@
 #(©)Codexbotz
-import logging
+#import logging
 import base64
 import re
 import asyncio
@@ -14,8 +14,8 @@ import time
 from datetime import datetime
 from database.database import user_data, db_verify_status, db_update_verify_status
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+#logger = logging.getLogger(__name__)
+#logger.setLevel(logging.INFO)
 
 async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL:
@@ -97,7 +97,7 @@ async def get_verify_status(user_id):
         verify = await user_data.db_verify_status(user_id)
         return verify
     except Exception as e:
-        logger.exception(e)
+        print("error help func verify")
 
 async def update_verify_status(user_id, verify_token="", is_verified=False, verified_time=0, link=""):
     try:
@@ -108,7 +108,7 @@ async def update_verify_status(user_id, verify_token="", is_verified=False, veri
         current['link'] = link
         await user_data.db_update_verify_status(user_id, current)
     except Exception as e:
-        logger.exception(e)
+        print("error help func update")
 
 async def get_shortlink(url, api, link):
     shortzy = Shortzy(api_key=api, base_site=url)
