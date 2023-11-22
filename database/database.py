@@ -1,13 +1,10 @@
-#(©)CodeXBotz
-
-
-
-
+import motor.motor_asyncio
+from motor.motor_asyncio import AsyncIOMotorClient
 import pymongo, os
 from config import DB_URI, DB_NAME
 
 
-dbclient = pymongo.MongoClient(DB_URI)
+dbclient = AsyncIOMotorClient(DB_URI)
 database = dbclient[DB_NAME]
 
 
