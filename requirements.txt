@@ -7,5 +7,11 @@ pymongo
 motor==2.5.1
 umongo==3.0.1
 dnspython
+marshmallow==3.14.1
 # --- For-Web-Response ------- #
+pytz
+requests
+bs4
+shortzy
 aiohttp
+aiofiles
