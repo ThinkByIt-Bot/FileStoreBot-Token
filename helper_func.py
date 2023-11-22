@@ -97,7 +97,7 @@ async def get_verify_status(user_id):
         verify = await user_data.db_verify_status(user_id)
         return verify
     except Exception as e:
-        raise RuntimeError(f"Error in helper function 'get_verify_status': {e}")
+        print(f"error helper 1")
 
 async def update_verify_status(user_id, verify_token="", is_verified=False, verified_time=0, link=""):
     try:
@@ -108,9 +108,8 @@ async def update_verify_status(user_id, verify_token="", is_verified=False, veri
         current['link'] = link
         await user_data.db_update_verify_status(user_id, current)
     except Exception as e:
-        raise RuntimeError(f"Error in helper function 'update_verify_status': {e}")
-
-
+        print(f"error helper 2")
+        
 async def get_shortlink(url, api, link):
     shortzy = Shortzy(api_key=api, base_site=url)
     link = await shortzy.convert(link)
