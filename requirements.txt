@@ -1,9 +1,9 @@
 # --- For-Bot-Working --------- #
-pyrogram
+pyrogram>=2.0.30
 TgCrypto
 pyromod==1.5
 # --- For-Database ------------ #
-pymongo
+pymongo[srv]==3.12.3
 motor==2.5.1
 umongo==3.0.1
 dnspython
