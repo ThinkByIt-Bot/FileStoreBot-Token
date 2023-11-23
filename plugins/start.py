@@ -144,22 +144,19 @@ async def start_command(client: Client, message: Message):
         print("User not found or an error occurred.")
 
     if len(message.command) > 1:
-        data = message.command[1]
-        try:
-            if data.startswith('verify'):
-                _, token = data.split("_", 1)
-                verify_status = await get_verify_status(id)
-                if verify_status['verify_token'] != token:
-                    return await message.reply("Your token is invalid.")
-                await update_verify_status(id, is_verified=True, verified_time=time.time())
-                if verify_status["link"] == "":
-                    reply_markup = None
-                await message.reply(f"✅ You token successfully verified", reply_markup=reply_markup, protect_content=True)
-                return
+        data = message.command[1].split('=')[1]
+        if data.startswith('verify'):
+            _, token = data.split("_", 1)
+            verify_status = await get_verify_status(id)
+            if verify_status['verify_token'] != token:
+                return await message.reply("Your token is invalid.")
+            await update_verify_status(id, is_verified=True, verified_time=time.time())
+            if verify_status["link"] == "":
+                reply_markup = None
+            await message.reply(f"✅ You token successfully verified", reply_markup=reply_markup, protect_content=True)
+            return
 
-        except Exception as e:
-            print(f"error verify 2")
-    
+        
 #=====================================================================================##
 
 WAIT_MSG = """"<b>Processing ...</b>"""
