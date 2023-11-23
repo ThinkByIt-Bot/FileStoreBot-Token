@@ -43,6 +43,8 @@ async def start_command(client: Client, message: Message):
             pass
 
     verify_status = await get_verify_status(id)
+    if verify_status['is_verified'] and VERIFY_EXPIRE < (time.time() - verify_status['verified_time']):
+        await update_verify_status(id, is_verified=False)
 
     # Case 1: Start command with "verify_" token
     if "verify_" in message.text:
