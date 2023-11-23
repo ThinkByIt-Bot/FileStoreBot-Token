@@ -42,13 +42,9 @@ async def start_command(client: Client, message: Message):
         except:
             pass
 
-    try:
-        verify_status = await get_verify_status(id)
-        if verify_status['is_verified'] and VERIFY_EXPIRE < (time.time() - verify_status['verified_time']):
-            await update_verify_status(id, is_verified=False)
-
-    except Exception as e:
-        print(f"error verify 1")
+    verify_status = await get_verify_status(id)
+    if verify_status['is_verified'] and VERIFY_EXPIRE < (time.time() - verify_status['verified_time']):
+        await update_verify_status(id, is_verified=False)
 
     verify_status = await get_verify_status(id)
     if not verify_status or verify_status.get('is_verified', False) is False:
