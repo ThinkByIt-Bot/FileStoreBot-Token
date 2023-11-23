@@ -57,7 +57,8 @@ async def start_command(client: Client, message: Message):
             reply_markup = None
         await message.reply(f"✅ Your token successfully verified", reply_markup=reply_markup, protect_content=True)
 
-    else:
+    verify_status = await get_verify_status(id)
+    if len(text) > 7 and verify_status['is_verified']:
         try:
             base64_string = text.split(" ", 1)[1]
         except:
