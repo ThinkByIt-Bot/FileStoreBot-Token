@@ -1,22 +1,35 @@
 #(©)CodeXBotz
-#import logging
-import random, string
-import time
-import re
-import base64
-import os
 import asyncio
-from pyrogram import Client, filters, enums, __version__
+import base64
+import logging
+import os
+import random
+import re
+import string
+import time
+
+from pyrogram import Client, filters, __version__
 from pyrogram.enums import ParseMode
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated
+
 from bot import Bot
-from config import ADMINS, FORCE_MSG, START_MSG, CUSTOM_CAPTION, IS_VERIFY, VERIFY_EXPIRE, SHORTLINK_API, SHORTLINK_URL, DISABLE_CHANNEL_BUTTON, PROTECT_CONTENT, TUT_VID
+from config import (
+    ADMINS,
+    FORCE_MSG,
+    START_MSG,
+    CUSTOM_CAPTION,
+    IS_VERIFY,
+    VERIFY_EXPIRE,
+    SHORTLINK_API,
+    SHORTLINK_URL,
+    DISABLE_CHANNEL_BUTTON,
+    PROTECT_CONTENT,
+    TUT_VID,
+)
 from helper_func import subscribed, encode, decode, get_messages, get_shortlink, get_verify_status, update_verify_status
 from database.database import add_user, del_user, full_userbase, present_user
 from shortzy import Shortzy
-
-#logger = logging.getLogger(__name__)
 
 
 
@@ -37,6 +50,100 @@ async def start_command(client: Client, message: Message):
     except Exception as e:
         print(f"error verify 1")
 
+    verify_status = await get_verify_status(id)
+    if verify_status['is_verified'] == False:
+        token = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+        await update_verify_status(id, verify_token=token, link="")
+        link = await get_shortlink(SHORTLINK_URL, SHORTLINK_API, f'https://telegram.dog/{client.username}?start=verify_{token}')
+        btn = [[
+            InlineKeyboardButton("Click here", url=link)
+            ],[
+            InlineKeyboardButton('🗳 Tutorial 🗳', url="www.google.com")
+        ]]
+        await message.reply("Your Ads token is expired, refresh your token and try again.\n\nToken Timeout: 24 hours\n\nWhat is the token?\n\nThis is an ads token. If you pass 1 ad, you can use the bot for 24 hours after passing the ad.", reply_markup=InlineKeyboardMarkup(btn), protect_content=True)
+        return
+
+    else:
+        text = message.text
+        if len(text) > 7:
+            try:
+                base64_string = text.split(" ", 1)[1]
+            except:
+                return
+            string = await decode(base64_string)
+            argument = string.split("-")
+            if len(argument) == 3:
+                try:
+                    start = int(int(argument[1]) / abs(client.db_channel.id))
+                    end = int(int(argument[2]) / abs(client.db_channel.id))
+                except:
+                    return
+                if start <= end:
+                    ids = range(start, end+1)
+                else:
+                    ids = []
+                    i = start
+                    while True:
+                        ids.append(i)
+                        i -= 1
+                        if i < end:
+                            break
+            elif len(argument) == 2:
+                try:
+                    ids = [int(int(argument[1]) / abs(client.db_channel.id))]
+                except:
+                    return
+            temp_msg = await message.reply("Please wait...")
+            try:
+                messages = await get_messages(client, ids)
+            except:
+                await message.reply_text("Something went wrong..!")
+                return
+            await temp_msg.delete()
+
+            for msg in messages:
+                if bool(CUSTOM_CAPTION) & bool(msg.document):
+                    caption = CUSTOM_CAPTION.format(previouscaption="" if not msg.caption else msg.caption.html, filename=msg.document.file_name)
+                else:
+                    caption = "" if not msg.caption else msg.caption.html
+
+                if DISABLE_CHANNEL_BUTTON:
+                    reply_markup = msg.reply_markup
+                else:
+                    reply_markup = None
+
+                try:
+                    await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup, protect_content=PROTECT_CONTENT)
+                    await asyncio.sleep(0.5)
+                except FloodWait as e:
+                    await asyncio.sleep(e.x)
+                    await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup, protect_content=PROTECT_CONTENT)
+                except:
+                    pass
+            return
+        else:
+            reply_markup = InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton("😊 About Me", callback_data="about"),
+                        InlineKeyboardButton("🔒 Close", callback_data="close")
+                    ]
+                ]
+            )
+            await message.reply_text(
+                text=START_MSG.format(
+                    first=message.from_user.first_name,
+                    last=message.from_user.last_name,
+                    username=None if not message.from_user.username else '@' + message.from_user.username,
+                    mention=message.from_user.mention,
+                    id=message.from_user.id
+                ),
+                reply_markup=reply_markup,
+                disable_web_page_preview=True,
+                quote=True
+            )
+            return
+
     if len(message.command) > 1:
         data = message.command[1]
         try:
@@ -53,106 +160,6 @@ async def start_command(client: Client, message: Message):
 
         except Exception as e:
             print(f"error verify 2")
-
-    else:
-        try:
-            verify_status = await get_verify_status(id)
-            if IS_VERIFY and not verify_status['is_verified']:
-                token = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
-                await update_verify_status(id, verify_token=token, link="")
-                link = await get_shortlink(SHORTLINK_URL, SHORTLINK_API, f'https://telegram.dog/{client.username}?start=verify_{token}')
-                btn = [[
-                    InlineKeyboardButton("Click here", url=link)
-                ],[
-                    InlineKeyboardButton('🗳 Tutorial 🗳', url="www.google.com")
-                ]]
-                await message.reply("Your Ads token is expired, refresh your token and try again.\n\nToken Timeout: 24 hour\n\nWhat is token?\n\nThis is an ads token. If you pass 1 ad, you can use the bot for 24 hour after passing the ad.", reply_markup=InlineKeyboardMarkup(btn), protect_content=True)
-                return
-        
-        except Exception as e:
-            print(f"error verify 3")
-        
-    text = message.text
-    if len(text)>7:
-        try:
-            base64_string = text.split(" ", 1)[1]
-        except:
-            return
-        string = await decode(base64_string)
-        argument = string.split("-")
-        if len(argument) == 3:
-            try:
-                start = int(int(argument[1]) / abs(client.db_channel.id))
-                end = int(int(argument[2]) / abs(client.db_channel.id))
-            except:
-                return
-            if start <= end:
-                ids = range(start,end+1)
-            else:
-                ids = []
-                i = start
-                while True:
-                    ids.append(i)
-                    i -= 1
-                    if i < end:
-                        break
-        elif len(argument) == 2:
-            try:
-                ids = [int(int(argument[1]) / abs(client.db_channel.id))]
-            except:
-                return
-        temp_msg = await message.reply("Please wait...")
-        try:
-            messages = await get_messages(client, ids)
-        except:
-            await message.reply_text("Something went wrong..!")
-            return
-        await temp_msg.delete()
-
-        for msg in messages:
-
-            if bool(CUSTOM_CAPTION) & bool(msg.document):
-                caption = CUSTOM_CAPTION.format(previouscaption = "" if not msg.caption else msg.caption.html, filename = msg.document.file_name)
-            else:
-                caption = "" if not msg.caption else msg.caption.html
-
-            if DISABLE_CHANNEL_BUTTON:
-                reply_markup = msg.reply_markup
-            else:
-                reply_markup = None
-
-            try:
-                await msg.copy(chat_id=message.from_user.id, caption = caption, parse_mode = ParseMode.HTML, reply_markup = reply_markup, protect_content=PROTECT_CONTENT)
-                await asyncio.sleep(0.5)
-            except FloodWait as e:
-                await asyncio.sleep(e.x)
-                await msg.copy(chat_id=message.from_user.id, caption = caption, parse_mode = ParseMode.HTML, reply_markup = reply_markup, protect_content=PROTECT_CONTENT)
-            except:
-                pass
-        return
-    else:
-        reply_markup = InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton("😊 About Me", callback_data = "about"),
-                    InlineKeyboardButton("🔒 Close", callback_data = "close")
-                ]
-            ]
-        )
-        await message.reply_text(
-            text = START_MSG.format(
-                first = message.from_user.first_name,
-                last = message.from_user.last_name,
-                username = None if not message.from_user.username else '@' + message.from_user.username,
-                mention = message.from_user.mention,
-                id = message.from_user.id
-            ),
-            reply_markup = reply_markup,
-            disable_web_page_preview = True,
-            quote = True
-        )
-        return
-
     
 #=====================================================================================##
 
