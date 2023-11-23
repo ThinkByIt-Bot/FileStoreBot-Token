@@ -46,20 +46,21 @@ async def start_command(client: Client, message: Message):
     if verify_status['is_verified'] and VERIFY_EXPIRE < (time.time() - verify_status['verified_time']):
         await update_verify_status(id, is_verified=False)
 
-    data = message.command[1]
-    if data.startswith('verify'):
-        _, token = data.split("_", 1)
-        verify_status = await get_verify_status(id)
-        if verify_status['verify_token'] != token:
-            return await message.reply("Your token is invalid.")
-        await update_verify_status(id, is_verified=True, verified_time=time.time())
-        if verify_status["link"] == "":
-            reply_markup = None
-            await message.reply(f"✅ You token successfully verified", reply_markup=reply_markup, protect_content=True)
-        return
+    if len(message.text.split()) > 2:
+        data = message.command[1]
+        if data.startswith('verify'):
+            _, token = data.split("_", 1)
+            verify_status = await get_verify_status(id)
+            if verify_status['verify_token'] != token:
+                return await message.reply("Your token is invalid.")
+            await update_verify_status(id, is_verified=True, verified_time=time.time())
+            if verify_status["link"] == "":
+                reply_markup = None
+                await message.reply(f"✅ You token successfully verified", reply_markup=reply_markup, protect_content=True)
+            return
 
     verify_status = await get_verify_status(id)
-    if not verify_status or verify_status.get('is_verified', False) is False:
+    if IS_VERIFY and not verify_status['is_verified']:
         token = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
         await update_verify_status(id, verify_token=token, link="")
         link = await get_shortlink(SHORTLINK_URL, SHORTLINK_API, f'https://telegram.dog/{client.username}?start=verify_{token}')
@@ -71,7 +72,7 @@ async def start_command(client: Client, message: Message):
         await message.reply("Your Ads token is expired, refresh your token and try again.\n\nToken Timeout: 24 hours\n\nWhat is the token?\n\nThis is an ads token. If you pass 1 ad, you can use the bot for 24 hours after passing the ad.", reply_markup=InlineKeyboardMarkup(btn), protect_content=True)
         return
 
-    elif verify_status and verify_status.get('is_verified', False) is True:
+    else:
         text = message.text
         if len(text) > 7:
             try:
@@ -151,10 +152,6 @@ async def start_command(client: Client, message: Message):
                 quote=True
             )
             return
-
-    else:
-        print("User not found or an error occurred.")
-
     
 
         
