@@ -43,7 +43,7 @@ async def db_update_verify_status(user_id, verify):
     await user_data.update_one({'_id': user_id}, {'$set': {'verify_status': verify}})
 
 async def full_userbase():
-    user_docs = await user_data.find()
+    user_docs = user_data.find()
     user_ids = [doc['_id'] async for doc in user_docs]
     return user_ids
 
