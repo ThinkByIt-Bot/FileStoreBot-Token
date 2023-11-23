@@ -110,6 +110,15 @@ async def get_shortlink(url, api, link):
     link = await shortzy.convert(link)
     return link
 
+def get_exp_time(seconds):
+    periods = [('d', 86400), ('h', 3600), ('m', 60), ('s', 1)]
+    result = ''
+    for period_name, period_seconds in periods:
+        if seconds >= period_seconds:
+            period_value, seconds = divmod(seconds, period_seconds)
+            result += f'{int(period_value)}{period_name}'
+    return result
+
 
 def get_readable_time(seconds: int) -> str:
     count = 0
