@@ -116,7 +116,6 @@ async def start_command(client: Client, message: Message):
             [[InlineKeyboardButton("😊 About Me", callback_data="about"),
               InlineKeyboardButton("🔒 Close", callback_data="close")]]
         )
-
         await message.reply_text(
             text=START_MSG.format(
                 first=message.from_user.first_name,
@@ -131,6 +130,7 @@ async def start_command(client: Client, message: Message):
         )
 
     else:
+        verify_status = await get_verify_status(id)
         if IS_VERIFY and not verify_status['is_verified']:
             token = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
             await update_verify_status(id, verify_token=token, link="")
