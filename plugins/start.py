@@ -115,9 +115,6 @@ async def start_command(client: Client, message: Message):
 
     # Case 3: Normal start command
     else:
-        if "verify_" not in message.text and verify_status['is_verified']:
-            return  # Do nothing for normal start if user is already verified
-
         if IS_VERIFY and not verify_status['is_verified']:
             # Generate a new verification token and link
             token = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
