@@ -93,23 +93,18 @@ async def get_message_id(client, message):
         return 0
 
 async def get_verify_status(user_id):
-    try:
-        verify = await user_data.db_verify_status(user_id)
-        return verify
-    except Exception as e:
-        print(f"error helper 1")
+    verify = await user_data.db_verify_status(user_id)
+    return verify
 
 async def update_verify_status(user_id, verify_token="", is_verified=False, verified_time=0, link=""):
-    try:
-        current = await db_verify_status(user_id)
-        current['verify_token'] = verify_token
-        current['is_verified'] = is_verified
-        current['verified_time'] = verified_time
-        current['link'] = link
-        await user_data.db_update_verify_status(user_id, current)
-    except Exception as e:
-        print(f"error helper 2")
-        
+    current = await db_verify_status(user_id)
+    current['verify_token'] = verify_token
+    current['is_verified'] = is_verified
+    current['verified_time'] = verified_time
+    current['link'] = link
+    await user_data.db_update_verify_status(user_id, current)
+
+
 async def get_shortlink(url, api, link):
     shortzy = Shortzy(api_key=api, base_site=url)
     link = await shortzy.convert(link)
