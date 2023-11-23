@@ -121,7 +121,7 @@ async def start_command(client: Client, message: Message):
                 [InlineKeyboardButton("Click here", url=link)],
                 [InlineKeyboardButton('🗳 Tutorial 🗳', url="www.google.com")]
             ]
-            await message.reply(f"Your Ads token is expired, refresh your token and try again.\n\nToken Timeout: {get_readable_time(VERIFY_EXPIRE)}\n\nWhat is the token?\n\nThis is an ads token. If you pass 1 ad, you can use the bot for 24 hours after passing the ad.", reply_markup=InlineKeyboardMarkup(btn), protect_content=True)
+            await message.reply(f"Your Ads token is expired, refresh your token and try again.\n\nToken Timeout: {get_exp_time(VERIFY_EXPIRE)}\n\nWhat is the token?\n\nThis is an ads token. If you pass 1 ad, you can use the bot for 24 hours after passing the ad.", reply_markup=InlineKeyboardMarkup(btn), protect_content=True)
 
         else:
             reply_markup = InlineKeyboardMarkup(
