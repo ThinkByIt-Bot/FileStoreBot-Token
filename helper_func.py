@@ -93,7 +93,7 @@ async def get_message_id(client, message):
         return 0
 
 async def get_verify_status(user_id):
-    verify = await user_data.db_verify_status(user_id)
+    verify = await db_verify_status(user_id)
     return verify
 
 async def update_verify_status(user_id, verify_token="", is_verified=False, verified_time=0, link=""):
@@ -102,7 +102,7 @@ async def update_verify_status(user_id, verify_token="", is_verified=False, veri
     current['is_verified'] = is_verified
     current['verified_time'] = verified_time
     current['link'] = link
-    await user_data.db_update_verify_status(user_id, current)
+    await db_update_verify_status(user_id, current)
 
 
 async def get_shortlink(url, api, link):
