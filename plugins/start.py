@@ -27,7 +27,7 @@ from config import (
     PROTECT_CONTENT,
     TUT_VID,
 )
-from helper_func import subscribed, encode, decode, get_messages, get_shortlink, get_verify_status, update_verify_status
+from helper_func import subscribed, encode, decode, get_messages, get_shortlink, get_verify_status, update_verify_status, get_exp_time
 from database.database import add_user, del_user, full_userbase, present_user
 from shortzy import Shortzy
 
@@ -46,17 +46,15 @@ async def start_command(client: Client, message: Message):
     if verify_status['is_verified'] and VERIFY_EXPIRE < (time.time() - verify_status['verified_time']):
         await update_verify_status(id, is_verified=False)
 
-    # Case 1: Start command with "verify_" token
     if "verify_" in message.text:
         _, token = message.text.split("_", 1)
         if verify_status['verify_token'] != token:
-            return await message.reply("Your token is invalid.")
+            return await message.reply("Your token is invalid or expired.")
         await update_verify_status(id, is_verified=True, verified_time=time.time())
         if verify_status["link"] == "":
             reply_markup = None
-        await message.reply(f"✅ Your token successfully verified", reply_markup=reply_markup, protect_content=True)
+        await message.reply(f"✅ Your token successfully verified and valid for: {get_exp_time(VERIFY_EXPIRE)}", reply_markup=reply_markup, protect_content=True)
 
-    # Case 2: Start command with an encoded file ID (for verified users)
     elif "verify_" not in message.text and verify_status['is_verified']:
         try:
             base64_string = message.text.split(" ", 1)[1]
@@ -113,7 +111,6 @@ async def start_command(client: Client, message: Message):
             except:
                 pass
 
-    # Case 3: Normal start command
     else:
         if IS_VERIFY and not verify_status['is_verified']:
             # Generate a new verification token and link
@@ -124,10 +121,9 @@ async def start_command(client: Client, message: Message):
                 [InlineKeyboardButton("Click here", url=link)],
                 [InlineKeyboardButton('🗳 Tutorial 🗳', url="www.google.com")]
             ]
-            await message.reply("Your Ads token is expired, refresh your token and try again.\n\nToken Timeout: 24 hours\n\nWhat is the token?\n\nThis is an ads token. If you pass 1 ad, you can use the bot for 24 hours after passing the ad.", reply_markup=InlineKeyboardMarkup(btn), protect_content=True)
+            await message.reply(f"Your Ads token is expired, refresh your token and try again.\n\nToken Timeout: {get_readable_time(VERIFY_EXPIRE)}\n\nWhat is the token?\n\nThis is an ads token. If you pass 1 ad, you can use the bot for 24 hours after passing the ad.", reply_markup=InlineKeyboardMarkup(btn), protect_content=True)
 
         else:
-            # Normal start for verified users
             reply_markup = InlineKeyboardMarkup(
                 [InlineKeyboardButton("😊 About Me", callback_data="about"),
                  InlineKeyboardButton("🔒 Close", callback_data="close")]
