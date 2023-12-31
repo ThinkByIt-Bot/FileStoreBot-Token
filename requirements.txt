@@ -1,13 +1,13 @@
 # --- For-Bot-Working --------- #
 pyrogram
 TgCrypto
-pyromod==1.5
+pyromod
 # --- For-Database ------------ #
-pymongo[srv]==4.1
-motor==3.1.1
-umongo==3.0.1
+pymongo
+motor
+umongo
 dnspython
-marshmallow==3.14.1
+marshmallow
 # --- For-Web-Response ------- #
 pytz
 requests
