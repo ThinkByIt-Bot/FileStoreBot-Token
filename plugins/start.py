@@ -35,7 +35,7 @@ from shortzy import Shortzy
 @Bot.on_message(filters.command('start') & filters.private & subscribed)
 async def start_command(client: Client, message: Message):
     id = message.from_user.id
-    owner_id = OWNER_ID  # Fetch the owner's ID from config
+    owner_id = ADMINS  # Fetch the owner's ID from config
 
     # Check if the user is the owner
     if id == owner_id:
