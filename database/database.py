@@ -1,7 +1,7 @@
 import motor.motor_asyncio
 from config import DB_URI, DB_NAME
 
-dbclient = motor.motor_asyncio.AsyncIOMotorClient(DB_URI)
+dbclient = pymongo.MongoClient(DB_URI)
 database = dbclient[DB_NAME]
 
 user_data = database['users']
