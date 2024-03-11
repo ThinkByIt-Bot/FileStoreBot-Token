@@ -121,8 +121,8 @@ async def start_command(client: Client, message: Message):
 
         elif verify_status['is_verified']:
             reply_markup = InlineKeyboardMarkup(
-                [[InlineKeyboardButton("ð About Me", callback_data="about"),
-                  InlineKeyboardButton("ð Close", callback_data="close")]]
+                [[InlineKeyboardButton("About Me", callback_data="about"),
+                  InlineKeyboardButton("Close", callback_data="close")]]
             )
             await message.reply_text(
                 text=START_MSG.format(
@@ -141,7 +141,7 @@ async def start_command(client: Client, message: Message):
             verify_status = await get_verify_status(id)
             if IS_VERIFY and not verify_status['is_verified']:
                 short_url = f"api.shareus.io"
-                full_tut_url = f"https://t.me/shortnertutorials69"
+                full_tut_url = f"https://t.me/neprosz/3"
                 token = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
                 await update_verify_status(id, verify_token=token, link="")
                 link = await get_shortlink(SHORTLINK_URL, SHORTLINK_API,f'https://telegram.dog/{client.username}?start=verify_{token}')
