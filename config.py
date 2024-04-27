@@ -10,7 +10,7 @@ from logging.handlers import RotatingFileHandler
 
 
 #Bot token @Botfather
-TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "6763406811:AAF6GOrWIKGdWY3nHTT3CNhcSNhF5DDkGT0")
+TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "6791024952:AAHG0drBbUoAjEOSdYzXUHmkfH-3UzeTmQ0")
 
 #Your API ID from my.telegram.org
 APP_ID = int(os.environ.get("APP_ID", "18196402"))
@@ -28,7 +28,7 @@ OWNER_ID = int(os.environ.get("OWNER_ID", "1163318744"))
 PORT = os.environ.get("PORT", "8080")
 
 #Database 
-DB_URI = "mongodb+srv://naibansari987:Yuuichi@cluster0.wwx1vtg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+DB_URI = "mongodb+srv://naibansari987:Yuuichi@cluster0.knyuwrv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 DB_NAME = os.environ.get("DATABASE_NAME", "filesharexbot")
 
 SHORTLINK_URL = os.environ.get("SHORTLINK_URL", "linkshortify.com")
