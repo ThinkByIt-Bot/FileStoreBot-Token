@@ -10,7 +10,7 @@ from logging.handlers import RotatingFileHandler
 
 
 #Bot token @Botfather
-TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
+TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "6791024952:AAHG0drBbUoAjEOSdYzXUHmkfH-3UzeTmQ0")
 
 #Your API ID from my.telegram.org
 APP_ID = int(os.environ.get("APP_ID", "18196402"))
@@ -22,7 +22,7 @@ API_HASH = os.environ.get("API_HASH", "a184b91d39fc85265e232e7c323fac45")
 CHANNEL_ID = int(os.environ.get("CHANNEL_ID", "0"))
 
 #OWNER ID
-OWNER_ID = int(os.environ.get("OWNER_ID", "1163318744"))
+OWNER_ID = int(os.environ.get("OWNER_ID", "5911422304"))
 
 #Port
 PORT = os.environ.get("PORT", "8080")
@@ -31,15 +31,15 @@ PORT = os.environ.get("PORT", "8080")
 DB_URI = "0"
 DB_NAME = os.environ.get("DATABASE_NAME", "filesharexbot")
 
-SHORTLINK_URL = os.environ.get("SHORTLINK_URL", "")
-SHORTLINK_API = os.environ.get("SHORTLINK_API", "")
+SHORTLINK_URL = os.environ.get("SHORTLINK_URL", "linkshortify.com")
+SHORTLINK_API = os.environ.get("SHORTLINK_API", "76fc51ee2ba9f3fd0b5ae1767ac26e0ba7f84792")
 VERIFY_EXPIRE = int(os.environ.get('VERIFY_EXPIRE', 43200)) # Add time in seconds
 IS_VERIFY = os.environ.get("IS_VERIFY", "True")
 TUT_VID = os.environ.get("TUT_VID","")
 
 
 #force sub channel id, if you want enable force sub
-FORCE_SUB_CHANNEL = int(os.environ.get("FORCE_SUB_CHANNEL", "0"))
+FORCE_SUB_CHANNEL = int(os.environ.get("FORCE_SUB_CHANNEL", "-1002000226877"))
 
 TG_BOT_WORKERS = int(os.environ.get("TG_BOT_WORKERS", "4"))
 
@@ -47,7 +47,7 @@ TG_BOT_WORKERS = int(os.environ.get("TG_BOT_WORKERS", "4"))
 START_MSG = os.environ.get("START_MESSAGE", "Hello {first}\n\nI can store private files in Specified Channel and other users can access it from special link.")
 try:
     ADMINS=[]
-    for x in (os.environ.get("ADMINS", "").split()):
+    for x in (os.environ.get("ADMINS", "5911422304 5686576026 5995342026").split()):
         ADMINS.append(int(x))
 except ValueError:
         raise Exception("Your Admins list does not contain valid integers.")
